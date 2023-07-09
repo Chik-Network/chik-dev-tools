@@ -5,24 +5,24 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import pytimeparse
 from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
-from chia.clvm.spend_sim import SimClient, SpendSim
-from chia.consensus.default_constants import DEFAULT_CONSTANTS
-from chia.types.blockchain_format.coin import Coin
-from chia.types.blockchain_format.program import Program
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.coin_record import CoinRecord
-from chia.types.coin_spend import CoinSpend
-from chia.types.spend_bundle import SpendBundle
-from chia.util.condition_tools import ConditionOpcode
-from chia.util.hash import std_hash
-from chia.util.ints import uint32, uint64
-from chia.wallet.derive_keys import master_sk_to_wallet_sk
-from chia.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (  # standard_transaction
+from chik.clvm.spend_sim import SimClient, SpendSim
+from chik.consensus.default_constants import DEFAULT_CONSTANTS
+from chik.types.blockchain_format.coin import Coin
+from chik.types.blockchain_format.program import Program
+from chik.types.blockchain_format.sized_bytes import bytes32
+from chik.types.coin_record import CoinRecord
+from chik.types.coin_spend import CoinSpend
+from chik.types.spend_bundle import SpendBundle
+from chik.util.condition_tools import ConditionOpcode
+from chik.util.hash import std_hash
+from chik.util.ints import uint32, uint64
+from chik.wallet.derive_keys import master_sk_to_wallet_sk
+from chik.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (  # standard_transaction
     DEFAULT_HIDDEN_PUZZLE_HASH,
     calculate_synthetic_secret_key,
     puzzle_for_pk,
 )
-from chia.wallet.sign_coin_spends import sign_coin_spends
+from chik.wallet.sign_coin_spends import sign_coin_spends
 
 from cdv.util.keys import private_key_for_index, public_key_for_index
 
@@ -50,7 +50,7 @@ class SpendResult:
     def find_standard_coins(self, puzzle_hash: bytes32) -> List[Coin]:
         """Given a Wallet's puzzle_hash, find standard coins usable by it.
 
-        These coins are recognized as changing the Wallet's chia balance and are
+        These coins are recognized as changing the Wallet's chik balance and are
         usable for any purpose."""
         return list(filter(lambda x: x.puzzle_hash == puzzle_hash, self.outputs))
 
@@ -111,14 +111,14 @@ class CoinWrapper:
 #   that have monetary value.
 #
 # - Smart coins which either lock value or embody information and
-#   services.  These also contain a chia balance but are used for purposes
+#   services.  These also contain a chik balance but are used for purposes
 #   other than a fungible, liquid, spendable resource.  They should not show
 #   up in a "wallet" in the same way.  We should use them by locking value
 #   into wallet coins.  We should ensure that value contained in a smart coin
 #   coin is never destroyed.
 class SmartCoinWrapper:
     def __init__(self, genesis_challenge: bytes32, source: Program):
-        """A wrapper for a smart coin carrying useful methods for interacting with chia."""
+        """A wrapper for a smart coin carrying useful methods for interacting with chik."""
         self.genesis_challenge = genesis_challenge
         self.source = source
 
@@ -174,7 +174,7 @@ class CoinPairSearch:
 
 # A basic wallet that knows about standard coins.
 # We can use this to track our balance as an end user and keep track of
-# chia that is released by smart coins, if the smart coins interact
+# chik that is released by smart coins, if the smart coins interact
 # meaningfully with them, as many likely will.
 class Wallet:
     def __init__(self, parent: "Network", name: str, key_idx: int):
@@ -279,7 +279,7 @@ class Wallet:
     #       )
     #
     #     where c.name is the coin's "name" (in the code) or coinID (in the
-    #     chialisp docs). delegated_puzzle_solution is a clvm program that
+    #     chiklisp docs). delegated_puzzle_solution is a clvm program that
     #     produces the conditions we want to give the puzzle program (the first
     #     kind of 'solution'), which will add the basic ones needed by owned
     #     standard coins.
@@ -373,7 +373,7 @@ class Wallet:
     # Find a coin containing amt we can use as a parent.
     # Synthesize a coin with sufficient funds if possible.
     async def choose_coin(self, amt) -> Optional[CoinWrapper]:
-        """Given an amount requirement, find a coin that contains at least that much chia"""
+        """Given an amount requirement, find a coin that contains at least that much chik"""
         start_balance: uint64 = self.balance()
         coins_to_spend: Optional[List[Coin]] = self.compute_combine_action(amt, [], dict(self.usable_coins))
 
@@ -404,8 +404,8 @@ class Wallet:
     # Create a new smart coin based on a parent coin and return the coin to the user.
     # TODO:
     #  - allow use of more than one coin to launch smart coin
-    #  - ensure input chia = output chia.  it'd be dumb to just allow somebody
-    #    to lose their chia without telling them.
+    #  - ensure input chik = output chik.  it'd be dumb to just allow somebody
+    #    to lose their chik without telling them.
     async def launch_smart_coin(self, source: Program, **kwargs) -> Optional[CoinWrapper]:
         """Create a new smart coin based on a parent coin and return the smart coin's living
         coin to the user or None if the spend failed."""
@@ -460,8 +460,8 @@ class Wallet:
         else:
             return None
 
-    # Give chia
-    async def give_chia(self, target: "Wallet", amt: uint64) -> Optional[CoinWrapper]:
+    # Give chik
+    async def give_chik(self, target: "Wallet", amt: uint64) -> Optional[CoinWrapper]:
         return await self.launch_smart_coin(target.puzzle, amt=amt)
 
     # Called each cycle before coins are re-established from the simulator.
@@ -493,7 +493,7 @@ class Wallet:
         delegated_puzzle_solution: Optional[Program] = None
         if "args" not in kwargs:
             target_puzzle_hash: bytes32 = self.puzzle_hash
-            # Allow the user to 'give this much chia' to another user.
+            # Allow the user to 'give this much chik' to another user.
             if "to" in kwargs:
                 target_puzzle_hash = kwargs["to"].puzzle_hash
 
@@ -554,7 +554,7 @@ class Wallet:
             return spend_bundle
 
 
-# A user oriented (domain specific) view of the chia network.
+# A user oriented (domain specific) view of the chik network.
 class Network:
     """An object that owns a simulation, responsible for managing Wallet actors,
     time and initialization."""
@@ -584,7 +584,7 @@ class Network:
         """Given a farmer, farm a block with that actor as the beneficiary of the farm
         reward.
 
-        Used for causing chia balance to exist so the system can do things.
+        Used for causing chik balance to exist so the system can do things.
         """
         farmer: Wallet = self.nobody
         if "farmer" in kwargs:
@@ -609,7 +609,7 @@ class Network:
     # This results in the creation of a wallet that tracks balance and standard coins.
     # Public and private key from here are used in signing.
     def make_wallet(self, name: str) -> Wallet:
-        """Create a wallet for an actor.  This causes the actor's chia balance in standard
+        """Create a wallet for an actor.  This causes the actor's chik balance in standard
         coin to be tracked during the simulation.  Wallets have some domain specific methods
         that behave in similar ways to other blockchains."""
         key_idx = 1000 * len(self.wallets)

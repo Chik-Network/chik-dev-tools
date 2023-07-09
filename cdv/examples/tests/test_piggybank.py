@@ -2,10 +2,10 @@ from typing import Dict, List, Optional
 
 import pytest
 import pytest_asyncio
-from chia.types.blockchain_format.coin import Coin
-from chia.types.condition_opcodes import ConditionOpcode
-from chia.types.spend_bundle import SpendBundle
-from chia.util.ints import uint64
+from chik.types.blockchain_format.coin import Coin
+from chik.types.condition_opcodes import ConditionOpcode
+from chik.types.spend_bundle import SpendBundle
+from chik.util.ints import uint64
 
 from cdv.examples.drivers.piggybank_drivers import (
     create_piggybank_puzzle,

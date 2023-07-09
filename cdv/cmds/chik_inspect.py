@@ -6,25 +6,25 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
 
 import click
 from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
-from chia.consensus.cost_calculator import NPCResult
-from chia.consensus.default_constants import DEFAULT_CONSTANTS
-from chia.full_node.bundle_tools import simple_solution_generator
-from chia.full_node.mempool_check_conditions import get_name_puzzle_conditions
-from chia.types.blockchain_format.coin import Coin
-from chia.types.blockchain_format.program import INFINITE_COST, Program
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.coin_record import CoinRecord
-from chia.types.coin_spend import CoinSpend
-from chia.types.generator_types import BlockGenerator
-from chia.types.spend_bundle import SpendBundle
-from chia.util.byte_types import hexstr_to_bytes
-from chia.util.condition_tools import conditions_dict_for_solution, pkm_pairs_for_conditions_dict
-from chia.util.config import load_config
-from chia.util.default_root import DEFAULT_ROOT_PATH
-from chia.util.ints import uint32, uint64
-from chia.util.keychain import bytes_to_mnemonic, mnemonic_to_seed
-from chia.wallet.derive_keys import _derive_path
-from chia.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (
+from chik.consensus.cost_calculator import NPCResult
+from chik.consensus.default_constants import DEFAULT_CONSTANTS
+from chik.full_node.bundle_tools import simple_solution_generator
+from chik.full_node.mempool_check_conditions import get_name_puzzle_conditions
+from chik.types.blockchain_format.coin import Coin
+from chik.types.blockchain_format.program import INFINITE_COST, Program
+from chik.types.blockchain_format.sized_bytes import bytes32
+from chik.types.coin_record import CoinRecord
+from chik.types.coin_spend import CoinSpend
+from chik.types.generator_types import BlockGenerator
+from chik.types.spend_bundle import SpendBundle
+from chik.util.byte_types import hexstr_to_bytes
+from chik.util.condition_tools import conditions_dict_for_solution, pkm_pairs_for_conditions_dict
+from chik.util.config import load_config
+from chik.util.default_root import DEFAULT_ROOT_PATH
+from chik.util.ints import uint32, uint64
+from chik.util.keychain import bytes_to_mnemonic, mnemonic_to_seed
+from chik.wallet.derive_keys import _derive_path
+from chik.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (
     DEFAULT_HIDDEN_PUZZLE_HASH,
     calculate_synthetic_public_key,
     calculate_synthetic_secret_key,
@@ -593,7 +593,7 @@ def do_inspect_program_cmd(
     "-t",
     "--key-type",
     type=click.Choice(["farmer", "pool", "wallet", "local", "backup", "owner", "auth"]),
-    help="Automatically use a chia defined HD path for a specific service",
+    help="Automatically use a chik defined HD path for a specific service",
 )
 @click.option(
     "-sy",

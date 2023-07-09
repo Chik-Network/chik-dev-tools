@@ -11,7 +11,7 @@ dependencies = [
     "pytest-asyncio",
     "pytimeparse",
     "anyio",
-    "chia-blockchain==1.8.1",
+    "chik-blockchain==1.8.1",
 ]
 
 dev_dependencies = [
@@ -31,7 +31,7 @@ dev_dependencies = [
 ]
 
 setup(
-    name="chia_dev_tools",
+    name="chik_dev_tools",
     packages=find_packages(exclude=("tests",)),
     author="Quexington",
     entry_points={
@@ -40,12 +40,12 @@ setup(
     package_data={
         "": ["*.clvm", "*.clvm.hex", "*.clib", "*.clsp", "*.clsp.hex"],
     },
-    author_email="m.hauff@chia.net",
+    author_email="admin@chiknetwork.com",
     setup_requires=["setuptools_scm"],
     install_requires=dependencies,
-    url="https://github.com/Chia-Network",
+    url="https://github.com/Chik-Network",
     license="https://opensource.org/licenses/Apache-2.0",
-    description="Chia development commands",
+    description="Chik development commands",
     long_description=long_description,
     long_description_content_type="text/markdown",
     classifiers=[
@@ -59,7 +59,7 @@ setup(
         dev=dev_dependencies,
     ),
     project_urls={
-        "Bug Reports": "https://github.com/Chia-Network/chia-dev-tools",
-        "Source": "https://github.com/Chia-Network/chia-dev-tools",
+        "Bug Reports": "https://github.com/Chik-Network/chik-dev-tools",
+        "Source": "https://github.com/Chik-Network/chik-dev-tools",
     },
 )

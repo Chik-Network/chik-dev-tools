@@ -5,12 +5,12 @@ from typing import List
 
 import click
 import pytest
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.util.bech32m import decode_puzzle_hash, encode_puzzle_hash
-from chia.util.hash import std_hash
+from chik.types.blockchain_format.sized_bytes import bytes32
+from chik.util.bech32m import decode_puzzle_hash, encode_puzzle_hash
+from chik.util.hash import std_hash
 
 from cdv import __version__
-from cdv.cmds.chia_inspect import inspect_cmd
+from cdv.cmds.chik_inspect import inspect_cmd
 from cdv.cmds.clsp import clsp_cmd
 from cdv.cmds.rpc import rpc_cmd
 
@@ -34,7 +34,7 @@ def monkey_patch_click() -> None:
 
 
 @click.group(
-    help="\n  Dev tooling for Chia development \n",
+    help="\n  Dev tooling for Chik development \n",
     context_settings=CONTEXT_SETTINGS,
 )
 @click.version_option(__version__)
@@ -94,7 +94,7 @@ def hash_cmd(data: str):
 @click.option(
     "-p",
     "--prefix",
-    default="xch",
+    default="xck",
     show_default=True,
     required=False,
     help="The prefix to encode with",

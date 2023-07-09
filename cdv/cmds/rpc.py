@@ -5,21 +5,21 @@ from typing import Dict, List, Optional, Tuple
 
 import aiohttp
 import click
-from chia.consensus.block_record import BlockRecord
-from chia.rpc.full_node_rpc_client import FullNodeRpcClient
-from chia.types.blockchain_format.coin import Coin
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.coin_record import CoinRecord
-from chia.types.coin_spend import CoinSpend
-from chia.types.full_block import FullBlock
-from chia.types.unfinished_header_block import UnfinishedHeaderBlock
-from chia.util.byte_types import hexstr_to_bytes
-from chia.util.config import load_config
-from chia.util.default_root import DEFAULT_ROOT_PATH
-from chia.util.ints import uint16, uint64
-from chia.util.misc import format_bytes
+from chik.consensus.block_record import BlockRecord
+from chik.rpc.full_node_rpc_client import FullNodeRpcClient
+from chik.types.blockchain_format.coin import Coin
+from chik.types.blockchain_format.sized_bytes import bytes32
+from chik.types.coin_record import CoinRecord
+from chik.types.coin_spend import CoinSpend
+from chik.types.full_block import FullBlock
+from chik.types.unfinished_header_block import UnfinishedHeaderBlock
+from chik.util.byte_types import hexstr_to_bytes
+from chik.util.config import load_config
+from chik.util.default_root import DEFAULT_ROOT_PATH
+from chik.util.ints import uint16, uint64
+from chik.util.misc import format_bytes
 
-from cdv.cmds.chia_inspect import do_inspect_spend_bundle_cmd
+from cdv.cmds.chik_inspect import do_inspect_spend_bundle_cmd
 from cdv.cmds.util import fake_context
 
 """
@@ -28,12 +28,12 @@ Please be careful when making changes.
 """
 
 
-@click.group("rpc", short_help="Make RPC requests to a Chia full node")
+@click.group("rpc", short_help="Make RPC requests to a Chik full node")
 def rpc_cmd() -> None:
     pass
 
 
-# Loading the client requires the standard chia root directory configuration that all of the chia commands rely on
+# Loading the client requires the standard chik root directory configuration that all of the chik commands rely on
 async def get_client() -> Optional[FullNodeRpcClient]:
     try:
         config = load_config(DEFAULT_ROOT_PATH, "config.yaml")

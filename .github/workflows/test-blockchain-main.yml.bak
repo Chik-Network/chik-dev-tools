@@ -1,4 +1,4 @@
-name: Test against chia-blockchain main
+name: Test against chik-blockchain main
 
 on:
   workflow_dispatch:
@@ -39,7 +39,7 @@ jobs:
       run: |
         python3 -m venv venv
         . ./venv/bin/activate
-        sed -i 's/chia-blockchain.*/chia-blockchain @ git+https:\/\/github.com\/Chia-Network\/chia-blockchain.git@main\",/g' setup.py
+        sed -i 's/chik-blockchain.*/chik-blockchain @ git+https:\/\/github.com\/Chik-Network\/chik-blockchain.git@main\",/g' setup.py
         pip install ."[dev]"
-        ./venv/bin/chia init
+        ./venv/bin/chik init
         ./venv/bin/py.test tests/ cdv/examples/tests -s -v --durations 0

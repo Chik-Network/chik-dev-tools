@@ -12,7 +12,7 @@ class TestCdvCommands:
 
         # Without prefix
         result: Result = runner.invoke(cli, ["encode", puzhash])
-        address: str = "xch184pr0kfc8fakucx3hlj4zyu7cttw235zqkl308kns8nxhmtmj7yqxsnauc"
+        address: str = "xck184pr0kfc8fakucx3hlj4zyu7cttw235zqkl308kns8nxhmtmj7yqxsnauc"
         assert result.exit_code == 0
         assert address in result.output
         result = runner.invoke(cli, ["decode", address])
@@ -20,8 +20,8 @@ class TestCdvCommands:
         assert puzhash in result.output
 
         # With prefix
-        result = runner.invoke(cli, ["encode", puzhash, "--prefix", "txch"])
-        test_address: str = "txch184pr0kfc8fakucx3hlj4zyu7cttw235zqkl308kns8nxhmtmj7yqth5tat"
+        result = runner.invoke(cli, ["encode", puzhash, "--prefix", "txck"])
+        test_address: str = "txck184pr0kfc8fakucx3hlj4zyu7cttw235zqkl308kns8nxhmtmj7yqth5tat"
         assert result.exit_code == 0
         assert test_address in result.output
         result = runner.invoke(cli, ["decode", test_address])
@@ -30,7 +30,7 @@ class TestCdvCommands:
 
     def test_hash(self):
         runner = CliRunner()
-        str_msg: str = "chia"
+        str_msg: str = "chik"
         b_msg: str = "0xcafef00d"
 
         result: Result = runner.invoke(cli, ["hash", str_msg])

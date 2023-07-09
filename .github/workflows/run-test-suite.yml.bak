@@ -78,21 +78,21 @@ jobs:
 
     steps:
     - name: Clean workspace
-      uses: Chia-Network/actions/clean-workspace@main
+      uses: Chik-Network/actions/clean-workspace@main
 
     - name: Checkout Code
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    - uses: Chia-Network/actions/setup-python@main
+    - uses: Chik-Network/actions/setup-python@main
       with:
         python-version: ${{ matrix.python.major-dot-minor }}
 
-    - uses: Chia-Network/actions/create-venv@main
+    - uses: Chik-Network/actions/create-venv@main
       id: create-venv
 
-    - uses: Chia-Network/actions/activate-venv@main
+    - uses: Chik-Network/actions/activate-venv@main
       with:
         directories: ${{ steps.create-venv.outputs.activate-venv-directories }}
 
@@ -103,7 +103,7 @@ jobs:
         python3 -m venv venv
         . ./venv/bin/activate
         pip install ."[dev]"
-        ./venv/bin/chia init
+        ./venv/bin/chik init
         ./venv/bin/py.test tests/ cdv/examples/tests -s -v --durations 0
 
     - name: Test code with pytest
@@ -111,5 +111,5 @@ jobs:
       shell: powershell
       run: |
         pip install .[dev]
-        chia init
+        chik init
         py.test tests\ cdv\examples\tests -s -v --durations 0

@@ -1,4 +1,4 @@
-Chia Dev Tools
+Chik Dev Tools
 =======
 
 Install
@@ -10,7 +10,7 @@ Initialize a new project directory and `cd` into it. Then follow the following i
 ```
 python3 -m venv venv
 . ./venv/bin/activate
-pip install --extra-index-url https://pypi.chia.net/simple/ chia-dev-tools
+pip install --extra-index-url https://pypi.chiknetwork.com/simple/ chik-dev-tools
 cdv --version
 ```
 (If you're on an M1 Mac, make sure you are running an ARM64 native python virtual environment)
@@ -22,7 +22,7 @@ Requires: Installation of [Python 3 for Windows](https://www.python.org/download
 ```
 py -m venv venv
 ./venv/Scripts/activate
-pip install --extra-index-url https://pypi.chia.net/simple/ chia-dev-tools
+pip install --extra-index-url https://pypi.chiknetwork.com/simple/ chik-dev-tools
 cdv --version
 ```
 
@@ -30,41 +30,41 @@ cdv --version
 
 Alternatively, you can clone the repo, and install from source:
 ```
-git clone https://github.com/Chia-Network/chia-dev-tools.git
-cd chia-dev-tools
+git clone https://github.com/Chik-Network/chik-dev-tools.git
+cd chik-dev-tools
 # The following for Linux/MacOS
 python3 -m venv venv
 . ./venv/bin/activate
 # The following for Windows
 py -m venv venv
 ./venv/Scripts/activate
-# To install chia-dev-tools
-pip install --extra-index-url https://pypi.chia.net/simple/ .
+# To install chik-dev-tools
+pip install --extra-index-url https://pypi.chiknetwork.com/simple/ .
 ```
 
 What's in it?
 -------------
 
-This python wheel will bring in commands from other chia repositories such as `brun` or even `chia`!
+This python wheel will bring in commands from other chik repositories such as `brun` or even `chik`!
 
 The command unique to this repository is `cdv`. Run `cdv --help` to see what it does:
 
 ```
 Usage: cdv [OPTIONS] COMMAND [ARGS]...
 
-  Dev tooling for Chia development
+  Dev tooling for Chik development
 
 Options:
   --version   Show the version and exit.
   -h, --help  Show this message and exit.
 
 Commands:
-  clsp     Commands to use when developing with chialisp
+  clsp     Commands to use when developing with chiklisp
   decode   Decode a bech32m address to a puzzle hash
   encode   Encode a puzzle hash to a bech32m address
   hash     SHA256 hash UTF-8 strings or bytes (use 0x prefix for bytes)
   inspect  Inspect various data structures
-  rpc      Make RPC requests to a Chia full node
+  rpc      Make RPC requests to a Chik full node
   test     Run the local test suite (located in ./tests)
 ```
 
@@ -84,10 +84,10 @@ cdv test
 ```
 
 
-Chialisp Commands
+Chiklisp Commands
 -----------------
 
-The `clsp` family of commands are helpful when writing, building, and hashing Chialisp and CLVM programs.
+The `clsp` family of commands are helpful when writing, building, and hashing Chiklisp and CLVM programs.
 
 ```
 cdv clsp build ./puzzles/password.clsp
@@ -100,7 +100,7 @@ cdv clsp disassemble ff0180
 Inspect Commands
 ----------------
 
-The `inspect` family of commands allows you to build and examine certain Chia related objects
+The `inspect` family of commands allows you to build and examine certain Chik related objects
 
 ```
 cdv inspect -id coins --parent-id e16dbc782f500aa24891886779067792b3305cff8b873ae1e77273ad0b7e6c05 --puzzle-hash e16dbc782f500aa24891886779067792b3305cff8b873ae1e77273ad0b7e6c05 --amount 123
@@ -112,7 +112,7 @@ cdv inspect --json any 0e1074f76177216b011668c35b1496cbd10eff5ae43f6a7924798771a
 RPC Commands
 ------------
 
-There are also commands for interacting with the full node's RPC endpoints (in development, more to come).  The family of commands finds the full node the same way that the `chia` commands do.  Make sure to have a local node running before you try these.
+There are also commands for interacting with the full node's RPC endpoints (in development, more to come).  The family of commands finds the full node the same way that the `chik` commands do.  Make sure to have a local node running before you try these.
 
 ```
 cdv rpc state
@@ -124,5 +124,5 @@ cdv rpc pushtx ./spend_bundle.json
 Python Packages
 ---------------
 
-Being in a virtual environment with this tool will also give your python programs access to all of the chia repository packages.
-It also comes with a package of its own that lives in the `cdv` namespace with some helpful utilities.  Of particular interest is the `cdv.test` package which comes with all sorts of tools to help you write lifecycle tests of smart coins.  Check out [the examples](https://github.com/Chia-Network/chia-dev-tools/tree/main/cdv/examples) to see it in action.
+Being in a virtual environment with this tool will also give your python programs access to all of the chik repository packages.
+It also comes with a package of its own that lives in the `cdv` namespace with some helpful utilities.  Of particular interest is the `cdv.test` package which comes with all sorts of tools to help you write lifecycle tests of smart coins.  Check out [the examples](https://github.com/Chik-Network/chik-dev-tools/tree/main/cdv/examples) to see it in action.

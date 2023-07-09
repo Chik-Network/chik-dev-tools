@@ -261,7 +261,7 @@ class TestInspectCommands:
         assert modified_cost in result.output
 
         # Try to use it the programmatic way (like cdv rpc pushtx does)
-        from cdv.cmds.chia_inspect import do_inspect_spend_bundle_cmd
+        from cdv.cmds.chik_inspect import do_inspect_spend_bundle_cmd
         from cdv.cmds.util import fake_context
 
         bundle_path = Path(__file__).parent.joinpath("object_files/spendbundles/spendbundle.json")
@@ -345,7 +345,7 @@ class TestInspectCommands:
         assert id in result.output
 
     def test_keys(self):
-        mnemonic: str = "chia chia chia chia chia chia chia chia chia chia chia chia chia chia chia chia chia chia chia chia chia chia chia chia"  # noqa
+        mnemonic: str = "chik chik chik chik chik chik chik chik chik chik chik chik chik chik chik chik chik chik chik chik chik chik chik chik"  # noqa
         sk: str = "6e66bc91c04127f1178cb725faf82b55214b5f215b10bd53bf2eb1ee9e76d2cc"
         pk: str = "8777e5c4f5b21840eb69d9cc09433655b044a8e80048cd9583bab9a90f4774d2d57c1b19196ae132c9502db5902f3e5d"
         hd_modifier: str = "m/12381/8444/0/0"

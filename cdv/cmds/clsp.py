@@ -4,16 +4,16 @@ from pathlib import Path
 from typing import List, Tuple
 
 import click
-from chia.types.blockchain_format.program import Program
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.util.bech32m import decode_puzzle_hash, encode_puzzle_hash
+from chik.types.blockchain_format.program import Program
+from chik.types.blockchain_format.sized_bytes import bytes32
+from chik.util.bech32m import decode_puzzle_hash, encode_puzzle_hash
 from clvm_tools.binutils import assemble, disassemble
 
 from cdv.cmds.util import append_include, parse_program
 from cdv.util.load_clvm import compile_clvm
 
 
-@click.group("clsp", short_help="Commands to use when developing with chialisp")
+@click.group("clsp", short_help="Commands to use when developing with chiklisp")
 def clsp_cmd() -> None:
     pass
 
@@ -155,8 +155,8 @@ def uncurry_cmd(program: str, treehash: bool, dump: bool):
     help="The tail hash of the CAT (hex or one of the standard CAT symbols, e.g. MRMT)",
 )
 def cat_puzzle_hash(inner_puzzlehash: str, tail_hash: str):
-    from chia.wallet.cat_wallet.cat_constants import DEFAULT_CATS
-    from chia.wallet.puzzles.cat_loader import CAT_MOD
+    from chik.wallet.cat_wallet.cat_constants import DEFAULT_CATS
+    from chik.wallet.puzzles.cat_loader import CAT_MOD
 
     default_cats_by_symbols = {cat["symbol"]: cat for cat in DEFAULT_CATS.values()}
     if tail_hash in default_cats_by_symbols:

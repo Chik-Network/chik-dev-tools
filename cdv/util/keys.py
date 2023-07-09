@@ -1,7 +1,7 @@
 from typing import Dict, List
 
 from blspy import AugSchemeMPL, BasicSchemeMPL, G1Element, G2Element, PrivateKey
-from chia.util.hash import std_hash
+from chik.util.hash import std_hash
 
 
 def secret_exponent_for_index(index: int) -> int:

@@ -3,7 +3,7 @@ import shutil
 from pathlib import Path
 from typing import IO, List
 
-from chia.types.blockchain_format.program import Program
+from chik.types.blockchain_format.program import Program
 from click.testing import CliRunner, Result
 from clvm_tools.binutils import disassemble
 
@@ -44,7 +44,7 @@ class TestClspCommands:
             # Use the retrieve command for the include file
             runner.invoke(cli, ["clsp", "retrieve", "condition_codes"])
 
-            # Test building Chialisp (automatic include search)
+            # Test building Chiklisp (automatic include search)
             mod_file: IO = open("mod.clsp", "w")
             mod_file.write(self.mod)
             mod_file.close()
@@ -55,7 +55,7 @@ class TestClspCommands:
             assert "ff0133" in hex_output
             assert len(hex_output) <= 7  # With or without newline
 
-            # Test building Chialisp (specified include search)
+            # Test building Chiklisp (specified include search)
             os.remove(Path("./mod.clsp.hex"))
             shutil.copytree("./include", "./include_test")
             shutil.rmtree("./include")
@@ -169,7 +169,7 @@ class TestClspCommands:
             assert result.exit_code == 0
             assert program_hash in result.output
 
-        # Test a program passed in as a Chialisp file
+        # Test a program passed in as a Chiklisp file
         with runner.isolated_filesystem():
             program_file: IO = open(filename, "w")
             program_file.write(program_as_mod)
@@ -181,19 +181,19 @@ class TestClspCommands:
     def test_cat_puzzle_hash(self):
         runner = CliRunner()
         args_bech32m = [
-            "xch18h6rmktpdgms23sqj009hxjwz7szmumwy257uzv8dnvqcuaz0ltqmu9ret",
+            "xck18h6rmktpdgms23sqj009hxjwz7szmumwy257uzv8dnvqcuaz0ltqmu9ret",
             "-t",
             "0x7efa9f202cfd8e174e1376790232f1249e71fbe46dc428f7237a47d871a2b78b",
         ]
-        expected_bech32m = "xch1wtlyxwdl99xk5war69jzxpafx4kmvcjrmevlxn4yet8r7cfc63tqww5qwg"
+        expected_bech32m = "xck1wtlyxwdl99xk5war69jzxpafx4kmvcjrmevlxn4yet8r7cfc63tqww5qwg"
         args_hex = [
             "0x3df43dd9616a3705460093de5b9a4e17a02df36e22a9ee09876cd80c73a27fd6",
             "-t",
             "0x7efa9f202cfd8e174e1376790232f1249e71fbe46dc428f7237a47d871a2b78b",
         ]
         expected_hex = "72fe4339bf294d6a3ba3d1642307a9356db66243de59f34ea4cace3f6138d456"
-        args_usds = ["xch16ay8wdjtl8f58gml4vl5jw4vm6ychhu3lk9hddhykhcmt6l6599s9lrvqn", "-t", "USDS"]
-        expected_usds = "xch1hurndm0nx93epskq496rt25yf5ar070wzhcdtpf3rt5gx2vu97wq4q5g3k"
+        args_usds = ["xck16ay8wdjtl8f58gml4vl5jw4vm6ychhu3lk9hddhykhcmt6l6599s9lrvqn", "-t", "USDS"]
+        expected_usds = "xck1hurndm0nx93epskq496rt25yf5ar070wzhcdtpf3rt5gx2vu97wq4q5g3k"
 
         result_bech32m: Result = runner.invoke(cli, ["clsp", "cat_puzzle_hash"] + args_bech32m)
         assert result_bech32m.exit_code == 0
