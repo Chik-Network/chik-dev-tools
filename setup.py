@@ -11,7 +11,7 @@ dependencies = [
     "pytest-asyncio",
     "pytimeparse",
     "anyio",
-    "chik-blockchain==1.8.1",
+    "chik-blockchain==1.8.5",
 ]
 
 dev_dependencies = [
