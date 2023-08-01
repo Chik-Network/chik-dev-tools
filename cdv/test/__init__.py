@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import pytimeparse
 from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
-from chik.clvm.spend_sim import SimClient, SpendSim
+from chik.klvm.spend_sim import SimClient, SpendSim
 from chik.consensus.default_constants import DEFAULT_CONSTANTS
 from chik.types.blockchain_format.coin import Coin
 from chik.types.blockchain_format.program import Program
@@ -279,14 +279,14 @@ class Wallet:
     #       )
     #
     #     where c.name is the coin's "name" (in the code) or coinID (in the
-    #     chiklisp docs). delegated_puzzle_solution is a clvm program that
+    #     chiklisp docs). delegated_puzzle_solution is a klvm program that
     #     produces the conditions we want to give the puzzle program (the first
     #     kind of 'solution'), which will add the basic ones needed by owned
     #     standard coins.
     #
     #     In most cases, we'll give a tuple like (1, [some, python, [data,
     #     here]]) for these arguments, because '1' is the quote function 'q' in
-    #     clvm. One could write this program with any valid clvm code though.
+    #     klvm. One could write this program with any valid klvm code though.
     #     The important thing is that it's runnable code, not literal data as
     #     one might expect.
     #
@@ -539,7 +539,7 @@ class Wallet:
                 [solution_for_coin],
                 self.pk_to_sk,
                 DEFAULT_CONSTANTS.AGG_SIG_ME_ADDITIONAL_DATA,
-                DEFAULT_CONSTANTS.MAX_BLOCK_COST_CLVM,
+                DEFAULT_CONSTANTS.MAX_BLOCK_COST_KLVM,
             )
         except ValueError:
             spend_bundle = SpendBundle(

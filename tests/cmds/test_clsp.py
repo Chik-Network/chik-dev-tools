@@ -5,7 +5,7 @@ from typing import IO, List
 
 from chik.types.blockchain_format.program import Program
 from click.testing import CliRunner, Result
-from clvm_tools.binutils import disassemble
+from klvm_tools.binutils import disassemble
 
 from cdv.cmds.cli import cli
 
@@ -30,14 +30,14 @@ class TestClspCommands:
     def test_build(self):
         runner = CliRunner()
         with runner.isolated_filesystem():
-            # Test building CLVM
-            program_file: IO = open("program.clvm", "w")
+            # Test building KLVM
+            program_file: IO = open("program.klvm", "w")
             program_file.write(self.program)
             program_file.close()
             result: Result = runner.invoke(cli, ["clsp", "build", "."])
             assert result.exit_code == 0
-            assert Path("./program.clvm.hex").exists()
-            hex_output: str = open("program.clvm.hex", "r").read()
+            assert Path("./program.klvm.hex").exists()
+            hex_output: str = open("program.klvm.hex", "r").read()
             assert "01" in hex_output
             assert len(hex_output) <= 3  # With or without newline
 
@@ -142,10 +142,10 @@ class TestClspCommands:
         assert self.program in result.output
         # Test the program passed in as a hex file
         with runner.isolated_filesystem():
-            program_file = open("program.clvm.hex", "w")
+            program_file = open("program.klvm.hex", "w")
             program_file.write(self.serialized)
             program_file.close()
-            result = runner.invoke(cli, ["clsp", "disassemble", "program.clvm.hex"])
+            result = runner.invoke(cli, ["clsp", "disassemble", "program.klvm.hex"])
             assert result.exit_code == 0
             assert self.program in result.output
 
@@ -159,8 +159,8 @@ class TestClspCommands:
         assert result.exit_code == 0
         assert program_hash in result.output
 
-        # Test a program passed in as a CLVM file
-        filename: str = "program.clvm"
+        # Test a program passed in as a KLVM file
+        filename: str = "program.klvm"
         with runner.isolated_filesystem():
             program_file: IO = open(filename, "w")
             program_file.write(program)

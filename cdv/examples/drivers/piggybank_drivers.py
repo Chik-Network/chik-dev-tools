@@ -7,13 +7,13 @@ from chik.types.blockchain_format.sized_bytes import bytes32
 from chik.types.condition_opcodes import ConditionOpcode
 from chik.util.hash import std_hash
 from chik.util.ints import uint64
-from clvm.casts import int_to_bytes
+from klvm.casts import int_to_bytes
 
 import cdv.clibs as std_lib
-from cdv.util.load_clvm import load_clvm
+from cdv.util.load_klvm import load_klvm
 
 clibs_path: Path = Path(std_lib.__file__).parent
-PIGGYBANK_MOD: Program = load_clvm("piggybank.clsp", "cdv.examples.clsp", search_paths=[clibs_path])
+PIGGYBANK_MOD: Program = load_klvm("piggybank.clsp", "cdv.examples.clsp", search_paths=[clibs_path])
 
 
 # Create a piggybank

@@ -87,7 +87,7 @@ cdv test
 Chiklisp Commands
 -----------------
 
-The `clsp` family of commands are helpful when writing, building, and hashing Chiklisp and CLVM programs.
+The `clsp` family of commands are helpful when writing, building, and hashing Chiklisp and KLVM programs.
 
 ```
 cdv clsp build ./puzzles/password.clsp

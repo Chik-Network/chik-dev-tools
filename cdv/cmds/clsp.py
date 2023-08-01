@@ -7,10 +7,10 @@ import click
 from chik.types.blockchain_format.program import Program
 from chik.types.blockchain_format.sized_bytes import bytes32
 from chik.util.bech32m import decode_puzzle_hash, encode_puzzle_hash
-from clvm_tools.binutils import assemble, disassemble
+from klvm_tools.binutils import assemble, disassemble
 
 from cdv.cmds.util import append_include, parse_program
-from cdv.util.load_clvm import compile_clvm
+from cdv.util.load_klvm import compile_klvm
 
 
 @click.group("clsp", short_help="Commands to use when developing with chiklisp")
@@ -20,7 +20,7 @@ def clsp_cmd() -> None:
 
 @clsp_cmd.command(
     "build",
-    short_help="Build all specified CLVM files (i.e mypuz.clsp or ./puzzles/*.clsp)",
+    short_help="Build all specified KLVM files (i.e mypuz.clsp or ./puzzles/*.clsp)",
 )
 @click.argument("files", nargs=-1, required=True, default=None)
 @click.option(
@@ -32,16 +32,16 @@ def clsp_cmd() -> None:
 )
 def build_cmd(files: Tuple[str], include: Tuple[str]) -> None:
     project_path = Path.cwd()
-    clvm_files = []
+    klvm_files = []
     for glob in files:
         for path in Path(project_path).rglob(glob):
             if path.is_dir():
-                for clvm_path in Path(path).rglob("*.cl[vs][mp]"):
-                    clvm_files.append(clvm_path)
+                for klvm_path in Path(path).rglob("*.cl[vs][mp]"):
+                    klvm_files.append(klvm_path)
             else:
-                clvm_files.append(path)
+                klvm_files.append(path)
 
-    for filename in clvm_files:
+    for filename in klvm_files:
         hex_file_name: str = filename.name + ".hex"
         full_hex_file_name = Path(filename.parent).joinpath(hex_file_name)
         # We only rebuild the file if the .hex is older
@@ -49,20 +49,20 @@ def build_cmd(files: Tuple[str], include: Tuple[str]) -> None:
             outfile = str(filename) + ".hex"
             try:
                 print("Beginning compilation of " + filename.name + "...")
-                compile_clvm(str(filename), outfile, search_paths=append_include(include))
+                compile_klvm(str(filename), outfile, search_paths=append_include(include))
                 print("...Compilation finished")
             except Exception as e:
                 print("Couldn't build " + filename.name + ": " + str(e))
 
 
-@clsp_cmd.command("disassemble", short_help="Disassemble serialized clvm into human readable form.")
+@clsp_cmd.command("disassemble", short_help="Disassemble serialized klvm into human readable form.")
 @click.argument("programs", nargs=-1, required=True)
 def disassemble_cmd(programs: Tuple[str]):
     for program in programs:
         print(disassemble(parse_program(program)))
 
 
-@clsp_cmd.command("treehash", short_help="Return the tree hash of a clvm file or string")
+@clsp_cmd.command("treehash", short_help="Return the tree hash of a klvm file or string")
 @click.argument("program", nargs=1, required=True)
 @click.option(
     "-i",
@@ -88,7 +88,7 @@ def treehash_cmd(program: str, include: Tuple[str]):
     "-x",
     "--dump",
     is_flag=True,
-    help="Output the hex serialized program rather that the CLVM form",
+    help="Output the hex serialized program rather that the KLVM form",
 )
 @click.option(
     "-i",
@@ -117,7 +117,7 @@ def curry_cmd(program: str, args: Tuple[str], treehash: bool, dump: bool, includ
     "-x",
     "--dump",
     is_flag=True,
-    help="Output the hex serialized program rather that the CLVM form",
+    help="Output the hex serialized program rather that the KLVM form",
 )
 def uncurry_cmd(program: str, treehash: bool, dump: bool):
     prog: Program = parse_program(program)

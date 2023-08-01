@@ -38,7 +38,7 @@ setup(
         "console_scripts": ["cdv = cdv.cmds.cli:main"],
     },
     package_data={
-        "": ["*.clvm", "*.clvm.hex", "*.clib", "*.clsp", "*.clsp.hex"],
+        "": ["*.klvm", "*.klvm.hex", "*.clib", "*.clsp", "*.clsp.hex"],
     },
     author_email="admin@chiknetwork.com",
     setup_requires=["setuptools_scm"],
