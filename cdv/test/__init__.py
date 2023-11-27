@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import binascii
 import datetime
 import struct
@@ -235,6 +237,12 @@ class Wallet:
     def pk_to_sk(self, pk: G1Element) -> PrivateKey:
         assert str(pk) in self.pk_to_sk_dict
         return self.pk_to_sk_dict[str(pk)]
+
+    def sk_for_puzzle_hash(self, puzzle_hash: bytes32) -> Optional[PrivateKey]:
+        """
+        This method is a stub, required for the sign_coin_spends method in chik wallet.
+        """
+        return None
 
     def compute_combine_action(
         self, amt: uint64, actions: List, usable_coins: Dict[bytes32, Union[Coin, CoinWrapper]]
@@ -538,8 +546,10 @@ class Wallet:
             spend_bundle: SpendBundle = await sign_coin_spends(
                 [solution_for_coin],
                 self.pk_to_sk,
+                self.sk_for_puzzle_hash,
                 DEFAULT_CONSTANTS.AGG_SIG_ME_ADDITIONAL_DATA,
                 DEFAULT_CONSTANTS.MAX_BLOCK_COST_KLVM,
+                [],
             )
         except ValueError:
             spend_bundle = SpendBundle(
@@ -617,7 +627,7 @@ class Network:
         self.wallets[str(w.pk())] = w
         return w
 
-    # Skip real time by farming blocks until the target duration is achieved.
+    # # Skip real time by farming blocks until the target duration is achieved.
     async def skip_time(self, target_duration: str, **kwargs):
         """Skip a duration of simulated time, causing blocks to be farmed.  If a farmer
         is specified, they win each block"""

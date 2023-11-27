@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import annotations
+
 from setuptools import find_packages, setup
 
 with open("README.md", "rt") as fh:
@@ -11,20 +13,20 @@ dependencies = [
     "pytest-asyncio",
     "pytimeparse",
     "anyio",
-    "chik-blockchain==1.8.5",
+    "chik-blockchain==2.1.1",
 ]
 
 dev_dependencies = [
     "anyio",
     "flake8",
     "mypy",
+    "black==23.7.0",
     "types-aiofiles",
     "types-click",
     "types-cryptography",
     "types-pkg_resources",
     "types-pyyaml",
     "types-setuptools",
-    "black==21.12b0",
     "isort",
     "pre-commit",
     "pylint",
@@ -40,7 +42,7 @@ setup(
     package_data={
         "": ["*.klvm", "*.klvm.hex", "*.clib", "*.clsp", "*.clsp.hex"],
     },
-    author_email="admin@chiknetwork.com",
+    author_email="m.hauff@chiknetwork.com",
     setup_requires=["setuptools_scm"],
     install_requires=dependencies,
     url="https://github.com/Chik-Network",
