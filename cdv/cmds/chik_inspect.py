@@ -7,7 +7,6 @@ from secrets import token_bytes
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
 
 import click
-from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
 from chik.consensus.cost_calculator import NPCResult
 from chik.consensus.default_constants import DEFAULT_CONSTANTS
 from chik.full_node.bundle_tools import simple_solution_generator
@@ -16,7 +15,7 @@ from chik.types.blockchain_format.coin import Coin
 from chik.types.blockchain_format.program import INFINITE_COST, Program
 from chik.types.blockchain_format.sized_bytes import bytes32
 from chik.types.coin_record import CoinRecord
-from chik.types.coin_spend import CoinSpend
+from chik.types.coin_spend import CoinSpend, make_spend
 from chik.types.generator_types import BlockGenerator
 from chik.types.spend_bundle import SpendBundle
 from chik.util.byte_types import hexstr_to_bytes
@@ -31,6 +30,7 @@ from chik.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (
     calculate_synthetic_public_key,
     calculate_synthetic_secret_key,
 )
+from chik_rs import AugSchemeMPL, G1Element, G2Element, PrivateKey
 
 from cdv.cmds.util import parse_program
 
@@ -161,8 +161,10 @@ def inspect_any_cmd(ctx: click.Context, objects: Tuple[str]):
         if type(obj) == str:
             print(f"Could not guess the type of {obj}")
         elif type(obj) == Coin:  # type: ignore[comparison-overlap]
+            assert isinstance(obj, Coin)  # mypy otherwise complains that obj is a str
             do_inspect_coin_cmd(ctx, [obj])
         elif type(obj) == CoinSpend:  # type: ignore[comparison-overlap]
+            assert isinstance(obj, CoinSpend)
             do_inspect_coin_spend_cmd(ctx, [obj])
         elif type(obj) == SpendBundle:  # type: ignore[comparison-overlap]
             do_inspect_spend_bundle_cmd(ctx, [obj])
@@ -170,11 +172,11 @@ def inspect_any_cmd(ctx: click.Context, objects: Tuple[str]):
             do_inspect_coin_record_cmd(ctx, [obj])
         elif type(obj) == Program:
             do_inspect_program_cmd(ctx, [obj])
-        elif type(obj) == G1Element:
+        elif type(obj) == G1Element:  # type: ignore[comparison-overlap]
             do_inspect_keys_cmd(ctx, public_key=obj)
-        elif type(obj) == PrivateKey:
+        elif type(obj) == PrivateKey:  # type: ignore[comparison-overlap]
             do_inspect_keys_cmd(ctx, secret_key=obj)
-        elif type(obj) == G2Element:
+        elif type(obj) == G2Element:  # type: ignore[comparison-overlap]
             print("That's a BLS aggregated signature")  # This is more helpful than just printing it back to them
 
 
@@ -271,7 +273,7 @@ def do_inspect_coin_spend_cmd(
         # If they specified the coin components
         if (not kwargs["coin"]) and all([kwargs["parent_id"], kwargs["puzzle_hash"], kwargs["amount"]]):
             coin_spend_objs: List[CoinSpend] = [
-                CoinSpend(
+                make_spend(
                     Coin(
                         bytes32.from_hexstr(kwargs["parent_id"]),
                         bytes32.from_hexstr(kwargs["puzzle_hash"]),
@@ -284,7 +286,7 @@ def do_inspect_coin_spend_cmd(
         # If they specifed a coin object to parse
         elif kwargs["coin"]:
             coin_spend_objs = [
-                CoinSpend(
+                make_spend(
                     do_inspect_coin_cmd(ctx, [kwargs["coin"]], print_results=False)[0],
                     parse_program(kwargs["puzzle_reveal"]),
                     parse_program(kwargs["solution"]),
@@ -320,7 +322,7 @@ def do_inspect_coin_spend_cmd(
                     mempool_mode=True,
                     constants=DEFAULT_CONSTANTS,
                 )
-                cost: int = npc_result.cost
+                cost = int(0 if npc_result.conds is None else npc_result.conds.cost)
                 if ignore_byte_cost:
                     cost -= len(bytes(coin_spend.puzzle_reveal)) * DEFAULT_CONSTANTS.COST_PER_BYTE
                 print(f"Cost: {cost}")
@@ -374,7 +376,9 @@ def do_inspect_spend_bundle_cmd(
     # If this is from the command line and they've specified at lease one spend to parse
     if kwargs and (len(kwargs["spend"]) > 0):
         if len(kwargs["aggsig"]) > 0:
-            sig: G2Element = AugSchemeMPL.aggregate([G2Element(hexstr_to_bytes(sig)) for sig in kwargs["aggsig"]])
+            sig: G2Element = AugSchemeMPL.aggregate(
+                [G2Element.from_bytes(hexstr_to_bytes(sig)) for sig in kwargs["aggsig"]]
+            )
         else:
             sig = G2Element()
         spend_bundle_objs: List[SpendBundle] = [
@@ -409,7 +413,7 @@ def do_inspect_spend_bundle_cmd(
                         mempool_mode=True,
                         constants=DEFAULT_CONSTANTS,
                     )
-                    cost: int = npc_result.cost
+                    cost = int(0 if npc_result.conds is None else npc_result.conds.cost)
                     if kwargs["ignore_byte_cost"]:
                         for coin_spend in spend_bundle.coin_spends:
                             cost -= len(bytes(coin_spend.puzzle_reveal)) * DEFAULT_CONSTANTS.COST_PER_BYTE
@@ -432,7 +436,7 @@ def do_inspect_spend_bundle_cmd(
                 for obj in spend_bundle_objs:
                     for coin_spend in obj.coin_spends:
                         conditions_dict = conditions_dict_for_solution(
-                            coin_spend.puzzle_reveal, coin_spend.solution, INFINITE_COST
+                            coin_spend.puzzle_reveal.to_program(), coin_spend.solution.to_program(), INFINITE_COST
                         )
                         if conditions_dict is None:
                             print(f"Generating conditions failed, con:{conditions_dict}")
@@ -626,6 +630,7 @@ def do_inspect_keys_cmd(ctx: click.Context, print_results: bool = True, **kwargs
     if len(kwargs) == 1:
         if "secret_key" in kwargs:
             sk = kwargs["secret_key"]
+            assert sk is not None
             pk = sk.get_g1()
         elif "public_key" in kwargs:
             pk = kwargs["public_key"]
@@ -676,6 +681,7 @@ def do_inspect_keys_cmd(ctx: click.Context, print_results: bool = True, **kwargs
                 if case == "auth":
                     list_path = [12381, 8444, 6, 0]
             if list_path:
+                assert sk is not None
                 sk = _derive_path(sk, list_path)
                 pk = sk.get_g1()
                 path = "m/" + "/".join([str(e) for e in path])
