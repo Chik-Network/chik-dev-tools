@@ -7,6 +7,7 @@ from typing import Dict, List, Optional, Tuple
 
 import aiohttp
 import click
+from chik.cmds.cmds_util import format_bytes
 from chik.consensus.block_record import BlockRecord
 from chik.rpc.full_node_rpc_client import FullNodeRpcClient
 from chik.types.blockchain_format.coin import Coin
@@ -19,7 +20,6 @@ from chik.util.byte_types import hexstr_to_bytes
 from chik.util.config import load_config
 from chik.util.default_root import DEFAULT_ROOT_PATH
 from chik.util.ints import uint16, uint64
-from chik.util.misc import format_bytes
 
 from cdv.cmds.chik_inspect import do_inspect_spend_bundle_cmd
 from cdv.cmds.util import fake_context

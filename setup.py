@@ -13,18 +13,18 @@ dependencies = [
     "pytest-asyncio",
     "pytimeparse",
     "anyio",
-    "chik-blockchain==2.3.0",
+    "chik-blockchain==2.5.0",
 ]
 
 dev_dependencies = [
     "anyio",
     "flake8",
     "mypy",
-    "black==24.4.2",
+    "black==24.10.0",
     "types-aiofiles",
     "types-click",
     "types-cryptography",
-    "types-pkg_resources",
+    "types-setuptools",
     "types-pyyaml",
     "types-setuptools",
     "isort",
@@ -52,8 +52,9 @@ setup(
     long_description_content_type="text/markdown",
     classifiers=[
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: Apache Software License",
         "Topic :: Security :: Cryptography",
     ],
