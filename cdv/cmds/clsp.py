@@ -6,8 +6,8 @@ from pathlib import Path
 
 import click
 from chik.types.blockchain_format.program import Program
-from chik.types.blockchain_format.sized_bytes import bytes32
 from chik.util.bech32m import decode_puzzle_hash, encode_puzzle_hash
+from chik_rs.sized_bytes import bytes32
 from klvm_tools.binutils import SExp, assemble, disassemble
 
 from cdv.cmds.util import append_include, parse_program

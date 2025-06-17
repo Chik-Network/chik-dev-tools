@@ -6,9 +6,9 @@ from pathlib import Path
 
 import click
 import pytest
-from chik.types.blockchain_format.sized_bytes import bytes32
 from chik.util.bech32m import decode_puzzle_hash, encode_puzzle_hash
 from chik.util.hash import std_hash
+from chik_rs.sized_bytes import bytes32
 
 from cdv import __version__
 from cdv.cmds.chik_inspect import inspect_cmd

@@ -13,13 +13,11 @@ from chik._tests.util.spend_sim import SimClient, SpendSim
 from chik.consensus.default_constants import DEFAULT_CONSTANTS
 from chik.types.blockchain_format.coin import Coin
 from chik.types.blockchain_format.program import Program
-from chik.types.blockchain_format.sized_bytes import bytes32
 from chik.types.coin_record import CoinRecord
 from chik.types.coin_spend import CoinSpend, make_spend
 from chik.types.spend_bundle import SpendBundle
 from chik.util.condition_tools import ConditionOpcode
 from chik.util.hash import std_hash
-from chik.util.ints import uint32, uint64
 from chik.wallet.derive_keys import master_sk_to_wallet_sk
 from chik.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (  # standard_transaction
     DEFAULT_HIDDEN_PUZZLE_HASH,
@@ -27,6 +25,8 @@ from chik.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (  # standa
     puzzle_for_pk,
 )
 from chik_rs import AugSchemeMPL, G1Element, G2Element, PrivateKey
+from chik_rs.sized_bytes import bytes32
+from chik_rs.sized_ints import uint32, uint64
 
 from cdv.util.keys import private_key_for_index, public_key_for_index
 from cdv.util.sign_coin_spends import sign_coin_spends

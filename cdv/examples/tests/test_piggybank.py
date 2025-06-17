@@ -7,7 +7,7 @@ import pytest_asyncio
 from chik.types.blockchain_format.coin import Coin
 from chik.types.condition_opcodes import ConditionOpcode
 from chik.types.spend_bundle import SpendBundle
-from chik.util.ints import uint64
+from chik_rs.sized_ints import uint64
 
 from cdv.examples.drivers.piggybank_drivers import (
     create_piggybank_puzzle,

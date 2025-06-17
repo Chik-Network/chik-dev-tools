@@ -14,7 +14,6 @@ from chik.consensus.default_constants import DEFAULT_CONSTANTS
 from chik.full_node.bundle_tools import simple_solution_generator
 from chik.types.blockchain_format.coin import Coin
 from chik.types.blockchain_format.program import INFINITE_COST, Program
-from chik.types.blockchain_format.sized_bytes import bytes32
 from chik.types.coin_record import CoinRecord
 from chik.types.coin_spend import CoinSpend, make_spend
 from chik.types.generator_types import BlockGenerator
@@ -22,7 +21,6 @@ from chik.util.byte_types import hexstr_to_bytes
 from chik.util.condition_tools import conditions_dict_for_solution, pkm_pairs_for_conditions_dict
 from chik.util.config import load_config
 from chik.util.default_root import DEFAULT_ROOT_PATH
-from chik.util.ints import uint32, uint64
 from chik.util.keychain import bytes_to_mnemonic, mnemonic_to_seed
 from chik.wallet.derive_keys import _derive_path
 from chik.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (
@@ -32,6 +30,8 @@ from chik.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (
 )
 from chik.wallet.wallet_spend_bundle import WalletSpendBundle
 from chik_rs import AugSchemeMPL, G1Element, G2Element, PrivateKey
+from chik_rs.sized_bytes import bytes32
+from chik_rs.sized_ints import uint32, uint64
 
 from cdv.cmds.util import parse_program
 

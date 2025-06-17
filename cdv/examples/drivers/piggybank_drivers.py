@@ -4,10 +4,10 @@ from pathlib import Path
 
 from chik.types.blockchain_format.coin import Coin
 from chik.types.blockchain_format.program import Program
-from chik.types.blockchain_format.sized_bytes import bytes32
 from chik.types.condition_opcodes import ConditionOpcode
 from chik.util.hash import std_hash
-from chik.util.ints import uint64
+from chik_rs.sized_bytes import bytes32
+from chik_rs.sized_ints import uint64
 from klvm.casts import int_to_bytes
 
 import cdv.clibs as std_lib
