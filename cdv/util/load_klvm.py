@@ -5,7 +5,7 @@ import inspect
 import os
 import pathlib
 
-import pkg_resources
+import importlib_resources
 from chik.types.blockchain_format.program import Program
 from chik.types.blockchain_format.serialized_program import SerializedProgram
 from klvm_tools.klvmc import compile_klvm as compile_klvm_py
@@ -71,21 +71,22 @@ def load_serialized_klvm(klvm_filename, package_or_requirement=__name__, search_
 
     hex_filename = f"{klvm_filename}.hex"
 
+    resources = importlib_resources.files(package_or_requirement)
+
     try:
-        if pkg_resources.resource_exists(package_or_requirement, klvm_filename):
-            full_path = pathlib.Path(pkg_resources.resource_filename(package_or_requirement, klvm_filename))
-            output = full_path.parent / hex_filename
-            compile_klvm(
-                full_path,
-                output,
-                search_paths=[full_path.parent, pathlib.Path.cwd().joinpath("include"), *search_paths],
-            )
-    except NotImplementedError:
-        # pyinstaller doesn't support `pkg_resources.resource_exists`
+        full_path = resources.joinpath(klvm_filename)
+        output = full_path.parent / hex_filename
+        compile_klvm(
+            full_path,
+            output,
+            search_paths=[full_path.parent, pathlib.Path.cwd().joinpath("include"), *search_paths],
+        )
+    except Exception:
         # so we just fall through to loading the hex klvm
         pass
 
-    klvm_hex = pkg_resources.resource_string(package_or_requirement, hex_filename).decode("utf8")
+    klvm_path = resources.joinpath(hex_filename)
+    klvm_hex = klvm_path.read_text(encoding="utf-8")
     klvm_blob = bytes.fromhex(klvm_hex)
     return SerializedProgram.from_bytes(klvm_blob)
 
