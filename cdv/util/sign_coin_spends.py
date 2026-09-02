@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import inspect
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
+from chik.consensus.condition_tools import conditions_dict_for_solution, pkm_pairs_for_conditions_dict
 from chik.types.coin_spend import CoinSpend
-from chik.types.spend_bundle import SpendBundle
-from chik.util.condition_tools import conditions_dict_for_solution, pkm_pairs_for_conditions_dict
-from chik_rs import AugSchemeMPL, G1Element, G2Element
+from chik_rs import AugSchemeMPL, G1Element, G2Element, SpendBundle
 from chik_rs.sized_bytes import bytes32
 
 

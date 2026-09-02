@@ -2,23 +2,21 @@ from __future__ import annotations
 
 import json
 import sys
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from pprint import pprint
 from secrets import token_bytes
-from typing import Any, Callable, ClassVar, Optional, Union
+from typing import Any, ClassVar
 
 import click
-from chik._tests.util.get_name_puzzle_conditions import get_name_puzzle_conditions
-from chik.consensus.cost_calculator import NPCResult
+from chik._tests.util.get_name_puzzle_conditions import NPCResult, get_name_puzzle_conditions
+from chik.consensus.condition_tools import conditions_dict_for_solution, pkm_pairs_for_conditions_dict
 from chik.consensus.default_constants import DEFAULT_CONSTANTS
 from chik.full_node.bundle_tools import simple_solution_generator
 from chik.types.blockchain_format.coin import Coin
 from chik.types.blockchain_format.program import INFINITE_COST, Program
-from chik.types.coin_record import CoinRecord
 from chik.types.coin_spend import CoinSpend, make_spend
 from chik.types.generator_types import BlockGenerator
 from chik.util.byte_types import hexstr_to_bytes
-from chik.util.condition_tools import conditions_dict_for_solution, pkm_pairs_for_conditions_dict
 from chik.util.config import load_config
 from chik.util.default_root import DEFAULT_ROOT_PATH
 from chik.util.keychain import bytes_to_mnemonic, mnemonic_to_seed
@@ -29,7 +27,7 @@ from chik.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (
     calculate_synthetic_secret_key,
 )
 from chik.wallet.wallet_spend_bundle import WalletSpendBundle
-from chik_rs import AugSchemeMPL, G1Element, G2Element, PrivateKey
+from chik_rs import AugSchemeMPL, CoinRecord, G1Element, G2Element, PrivateKey
 from chik_rs.sized_bytes import bytes32
 from chik_rs.sized_ints import uint32, uint64
 
@@ -202,7 +200,7 @@ def inspect_coin_cmd(ctx: click.Context, coins: tuple[str], **kwargs):
 
 def do_inspect_coin_cmd(
     ctx: click.Context,
-    coins: Union[tuple[str], list[Coin]],
+    coins: tuple[str] | list[Coin],
     print_results: bool = True,
     **kwargs,
 ) -> list[Coin]:
@@ -259,7 +257,7 @@ def inspect_coin_spend_cmd(ctx: click.Context, spends: tuple[str], **kwargs):
 
 def do_inspect_coin_spend_cmd(
     ctx: click.Context,
-    spends: Union[tuple[str], list[CoinSpend]],
+    spends: tuple[str] | list[CoinSpend],
     print_results: bool = True,
     **kwargs,
 ) -> list[CoinSpend]:
@@ -321,7 +319,7 @@ def do_inspect_coin_spend_cmd(
                 npc_result: NPCResult = get_name_puzzle_conditions(
                     program,
                     INFINITE_COST,
-                    height=DEFAULT_CONSTANTS.SOFT_FORK6_HEIGHT,  # so that all opcodes are available
+                    height=DEFAULT_CONSTANTS.HARD_FORK_HEIGHT,  # so that all opcodes are available
                     mempool_mode=True,
                     constants=DEFAULT_CONSTANTS,
                 )
@@ -372,7 +370,7 @@ def inspect_spend_bundle_cmd(ctx: click.Context, bundles: tuple[str], **kwargs):
 
 def do_inspect_spend_bundle_cmd(
     ctx: click.Context,
-    bundles: Union[tuple[str], list[WalletSpendBundle]],
+    bundles: tuple[str] | list[WalletSpendBundle],
     print_results: bool = True,
     **kwargs,
 ) -> list[WalletSpendBundle]:
@@ -412,7 +410,7 @@ def do_inspect_spend_bundle_cmd(
                     npc_result: NPCResult = get_name_puzzle_conditions(
                         program,
                         INFINITE_COST,
-                        height=DEFAULT_CONSTANTS.SOFT_FORK6_HEIGHT,  # so that all opcodes are available
+                        height=DEFAULT_CONSTANTS.HARD_FORK_HEIGHT,  # so that all opcodes are available
                         mempool_mode=True,
                         constants=DEFAULT_CONSTANTS,
                     )
@@ -439,7 +437,7 @@ def do_inspect_spend_bundle_cmd(
                 for obj in spend_bundle_objs:
                     for coin_spend in obj.coin_spends:
                         conditions_dict = conditions_dict_for_solution(
-                            coin_spend.puzzle_reveal.to_program(), coin_spend.solution.to_program(), INFINITE_COST
+                            coin_spend.puzzle_reveal, coin_spend.solution, INFINITE_COST
                         )
                         if conditions_dict is None:
                             print(f"Generating conditions failed, con: {conditions_dict}")
@@ -488,6 +486,7 @@ def do_inspect_spend_bundle_cmd(
 @click.option(
     "-ci",
     "--confirmed-block-index",
+    type=int,
     help="The block index in which this coin was created",
 )
 @click.option(
@@ -501,6 +500,7 @@ def do_inspect_spend_bundle_cmd(
 @click.option(
     "-t",
     "--timestamp",
+    type=int,
     help="The timestamp of the block in which this coin was created",
 )
 @click.pass_context
@@ -510,7 +510,7 @@ def inspect_coin_record_cmd(ctx: click.Context, records: tuple[str], **kwargs):
 
 def do_inspect_coin_record_cmd(
     ctx: click.Context,
-    records: Union[tuple[str], list[CoinRecord]],
+    records: tuple[str] | list[CoinRecord],
     print_results: bool = True,
     **kwargs,
 ) -> list[CoinRecord]:
@@ -574,7 +574,7 @@ def inspect_program_cmd(ctx: click.Context, programs: tuple[str], **kwargs):
 
 def do_inspect_program_cmd(
     ctx: click.Context,
-    programs: Union[tuple[str], list[Program]],
+    programs: tuple[str] | list[Program],
     print_results: bool = True,
     **kwargs,
 ) -> list[Program]:
@@ -626,7 +626,7 @@ def inspect_keys_cmd(ctx: click.Context, **kwargs):
 
 
 def do_inspect_keys_cmd(ctx: click.Context, print_results: bool = True, **kwargs):
-    sk: Optional[PrivateKey] = None
+    sk: PrivateKey | None = None
     pk: G1Element = G1Element()
     path: str = "m"
     # If we're receiving this from the any command
@@ -748,7 +748,7 @@ def inspect_sigs_cmd(ctx: click.Context, **kwargs):
 # at the end it returns the result of running those parameters in that order.
 def do_inspect_sigs_cmd(ctx: click.Context, print_results: bool = True, **kwargs) -> G2Element:
     base = G2Element()
-    sk: Optional[PrivateKey] = None
+    sk: PrivateKey | None = None
     for param, value in OrderedParamsCommand._options:
         if param.name == "secret_key":
             sk = PrivateKey.from_bytes(hexstr_to_bytes(value))

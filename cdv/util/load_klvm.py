@@ -24,7 +24,7 @@ if "KLVM_TOOLS_RS" in os.environ:
             m.update(open(f).read().encode("utf8"))
             return m.hexdigest()
 
-        from klvm_tools_rs import compile_klvm as compile_klvm_rs
+        from klvm_tools_rs import compile_klvm as compile_klvm_rs  # type: ignore[import-untyped]
 
         def translate_path(p_):
             p = str(p_)
@@ -74,7 +74,7 @@ def load_serialized_klvm(klvm_filename, package_or_requirement=__name__, search_
     resources = importlib_resources.files(package_or_requirement)
 
     try:
-        full_path = resources.joinpath(klvm_filename)
+        full_path = pathlib.Path(str(resources.joinpath(klvm_filename)))
         output = full_path.parent / hex_filename
         compile_klvm(
             full_path,

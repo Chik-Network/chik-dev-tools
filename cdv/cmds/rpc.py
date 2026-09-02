@@ -3,21 +3,18 @@ from __future__ import annotations
 import asyncio
 import json
 from pprint import pprint
-from typing import Optional
 
 import aiohttp
 import click
 from chik.cmds.cmds_util import format_bytes
-from chik.consensus.block_record import BlockRecord
-from chik.rpc.full_node_rpc_client import FullNodeRpcClient
+from chik.full_node.full_node_rpc_client import FullNodeRpcClient
 from chik.types.blockchain_format.coin import Coin
-from chik.types.coin_record import CoinRecord
 from chik.types.coin_spend import CoinSpend
-from chik.types.full_block import FullBlock
 from chik.types.unfinished_header_block import UnfinishedHeaderBlock
 from chik.util.byte_types import hexstr_to_bytes
 from chik.util.config import load_config
 from chik.util.default_root import DEFAULT_ROOT_PATH
+from chik_rs import BlockRecord, CoinRecord, FullBlock
 from chik_rs.sized_bytes import bytes32
 from chik_rs.sized_ints import uint16, uint64
 
@@ -36,12 +33,12 @@ def rpc_cmd() -> None:
 
 
 # Loading the client requires the standard chik root directory configuration that all of the chik commands rely on
-async def get_client() -> Optional[FullNodeRpcClient]:
+async def get_client() -> FullNodeRpcClient | None:
     try:
         config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
         self_hostname = config["self_hostname"]
         full_node_rpc_port = config["full_node"]["rpc_port"]
-        full_node_client: Optional[FullNodeRpcClient] = await FullNodeRpcClient.create(
+        full_node_client: FullNodeRpcClient | None = await FullNodeRpcClient.create(
             self_hostname, uint16(full_node_rpc_port), DEFAULT_ROOT_PATH, config
         )
         return full_node_client
@@ -178,7 +175,7 @@ def rpc_space_cmd(older: str, newer: str, start: int, end: int):
                         )
                     ).header_hash
 
-            netspace: Optional[uint64] = await node_client.get_network_space(start_hash, end_hash)
+            netspace: uint64 | None = await node_client.get_network_space(start_hash, end_hash)
             if netspace:
                 pprint(format_bytes(netspace))
             else:
@@ -227,7 +224,7 @@ def rpc_puzsol_cmd(coinid: str, block_height: int):
     async def do_command():
         try:
             node_client: FullNodeRpcClient = await get_client()
-            coin_spend: Optional[CoinSpend] = await node_client.get_puzzle_and_solution(
+            coin_spend: CoinSpend | None = await node_client.get_puzzle_and_solution(
                 bytes.fromhex(coinid), block_height
             )
             print(json.dumps(coin_spend.to_json_dict(), sort_keys=True, indent=4))
