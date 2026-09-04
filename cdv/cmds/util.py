@@ -4,8 +4,8 @@ import re
 from collections.abc import Iterable
 
 from chik.types.blockchain_format.program import Program
-from klvm_tools.binutils import assemble
-from klvm_tools.klvmc import compile_klvm_text
+from clvk_tools.binutils import assemble
+from clvk_tools.clvkc import compile_clvk_text
 
 
 # This is do trick inspect commands into thinking they're commands
@@ -14,7 +14,7 @@ def fake_context() -> dict:
     return ctx
 
 
-# The klvm loaders in this library automatically search for includable files in the directory './include'
+# The clvk loaders in this library automatically search for includable files in the directory './include'
 def append_include(search_paths: Iterable[str]) -> list[str]:
     if search_paths:
         search_list = list(search_paths)
@@ -29,7 +29,7 @@ def parse_program(program: str | Program, include: Iterable = []) -> Program:
     if isinstance(program, Program):
         return program
     else:
-        if "(" in program:  # If it's raw klvm
+        if "(" in program:  # If it's raw clvk
             prog: Program = Program.to(assemble(program))
         elif "." not in program:  # If it's a byte string
             prog = Program.fromhex(program)
@@ -39,9 +39,9 @@ def parse_program(program: str | Program, include: Iterable = []) -> Program:
                 if "(" in filestring:  # If it's not compiled
                     # TODO: This should probably be more robust
                     if re.compile(r"\(mod\s").search(filestring):  # If it's Chiklisp
-                        prog = Program.to(compile_klvm_text(filestring, append_include(include)))
-                    else:  # If it's KLVM
+                        prog = Program.to(compile_clvk_text(filestring, append_include(include)))
+                    else:  # If it's CLVK
                         prog = Program.to(assemble(filestring))
-                else:  # If it's serialized KLVM
+                else:  # If it's serialized CLVK
                     prog = Program.fromhex(filestring)
         return prog

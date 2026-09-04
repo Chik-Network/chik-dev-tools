@@ -59,6 +59,6 @@ include-package-data = true
 exclude = ["tests*"]
 
 [tool.setuptools.package-data]
-"*" = ["*.klvm", "*.klvm.hex", "*.clib", "*.clsp", "*.clsp.hex"]
+"*" = ["*.clvk", "*.clvk.hex", "*.clib", "*.clsp", "*.clsp.hex"]
 
 [tool.setuptools_scm]

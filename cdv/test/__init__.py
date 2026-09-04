@@ -288,14 +288,14 @@ class Wallet:
     #       )
     #
     #     where c.name is the coin's "name" (in the code) or coinID (in the
-    #     chiklisp docs). delegated_puzzle_solution is a klvm program that
+    #     chiklisp docs). delegated_puzzle_solution is a clvk program that
     #     produces the conditions we want to give the puzzle program (the first
     #     kind of 'solution'), which will add the basic ones needed by owned
     #     standard coins.
     #
     #     In most cases, we'll give a tuple like (1, [some, python, [data,
     #     here]]) for these arguments, because '1' is the quote function 'q' in
-    #     klvm. One could write this program with any valid klvm code though.
+    #     clvk. One could write this program with any valid clvk code though.
     #     The important thing is that it's runnable code, not literal data as
     #     one might expect.
     #
@@ -539,7 +539,7 @@ class Wallet:
                 self.pk_to_sk,
                 self.sk_for_puzzle_hash,
                 DEFAULT_CONSTANTS.AGG_SIG_ME_ADDITIONAL_DATA,
-                DEFAULT_CONSTANTS.MAX_BLOCK_COST_KLVM,
+                DEFAULT_CONSTANTS.MAX_BLOCK_COST_CLVK,
                 [],
             )
         except ValueError:

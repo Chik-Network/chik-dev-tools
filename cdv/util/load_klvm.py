@@ -8,13 +8,13 @@ import pathlib
 import importlib_resources
 from chik.types.blockchain_format.program import Program
 from chik.types.blockchain_format.serialized_program import SerializedProgram
-from klvm_tools.klvmc import compile_klvm as compile_klvm_py
+from clvk_tools.clvkc import compile_clvk as compile_clvk_py
 
-compile_klvm = compile_klvm_py
+compile_clvk = compile_clvk_py
 
 
-# Handle optional use of klvm_tools_rs if available and requested
-if "KLVM_TOOLS_RS" in os.environ:
+# Handle optional use of clvk_tools_rs if available and requested
+if "CLVK_TOOLS_RS" in os.environ:
     try:
 
         def sha256file(f):
@@ -24,7 +24,7 @@ if "KLVM_TOOLS_RS" in os.environ:
             m.update(open(f).read().encode("utf8"))
             return m.hexdigest()
 
-        from klvm_tools_rs import compile_klvm as compile_klvm_rs  # type: ignore[import-untyped]
+        from clvk_tools_rs import compile_clvk as compile_clvk_rs  # type: ignore[import-untyped]
 
         def translate_path(p_):
             p = str(p_)
@@ -37,15 +37,15 @@ if "KLVM_TOOLS_RS" in os.environ:
                 except Exception:
                     return p
 
-        def rust_compile_klvm(full_path, output, search_paths=[]):
+        def rust_compile_clvk(full_path, output, search_paths=[]):
             treated_include_paths = list(map(translate_path, search_paths))
-            print("compile_klvm_rs", full_path, output, treated_include_paths)
-            compile_klvm_rs(str(full_path), str(output), treated_include_paths)
+            print("compile_clvk_rs", full_path, output, treated_include_paths)
+            compile_clvk_rs(str(full_path), str(output), treated_include_paths)
 
-            if os.environ["KLVM_TOOLS_RS"] == "check":
+            if os.environ["CLVK_TOOLS_RS"] == "check":
                 assert False
                 orig = str(output) + ".orig"
-                compile_klvm_py(full_path, orig, search_paths=search_paths)
+                compile_clvk_py(full_path, orig, search_paths=search_paths)
                 orig256 = sha256file(orig)
                 rs256 = sha256file(output)
 
@@ -54,48 +54,48 @@ if "KLVM_TOOLS_RS" in os.environ:
                     print("Aborting compilation due to mismatch with rust")
                     assert orig256 == rs256
 
-        compile_klvm = rust_compile_klvm
+        compile_clvk = rust_compile_clvk
     finally:
         pass
 
 
-def load_serialized_klvm(klvm_filename, package_or_requirement=__name__, search_paths=[]) -> SerializedProgram:
+def load_serialized_clvk(clvk_filename, package_or_requirement=__name__, search_paths=[]) -> SerializedProgram:
     """
-    This function takes a .klvm file in the given package and compiles it to a
-    .klvm.hex file if the .hex file is missing or older than the .klvm file, then
+    This function takes a .clvk file in the given package and compiles it to a
+    .clvk.hex file if the .hex file is missing or older than the .clvk file, then
     returns the contents of the .hex file as a `Program`.
 
-    klvm_filename: file name
-    package_or_requirement: usually `__name__` if the klvm file is in the same package
+    clvk_filename: file name
+    package_or_requirement: usually `__name__` if the clvk file is in the same package
     """
 
-    hex_filename = f"{klvm_filename}.hex"
+    hex_filename = f"{clvk_filename}.hex"
 
     resources = importlib_resources.files(package_or_requirement)
 
     try:
-        full_path = pathlib.Path(str(resources.joinpath(klvm_filename)))
+        full_path = pathlib.Path(str(resources.joinpath(clvk_filename)))
         output = full_path.parent / hex_filename
-        compile_klvm(
+        compile_clvk(
             full_path,
             output,
             search_paths=[full_path.parent, pathlib.Path.cwd().joinpath("include"), *search_paths],
         )
     except Exception:
-        # so we just fall through to loading the hex klvm
+        # so we just fall through to loading the hex clvk
         pass
 
-    klvm_path = resources.joinpath(hex_filename)
-    klvm_hex = klvm_path.read_text(encoding="utf-8")
-    klvm_blob = bytes.fromhex(klvm_hex)
-    return SerializedProgram.from_bytes(klvm_blob)
+    clvk_path = resources.joinpath(hex_filename)
+    clvk_hex = clvk_path.read_text(encoding="utf-8")
+    clvk_blob = bytes.fromhex(clvk_hex)
+    return SerializedProgram.from_bytes(clvk_blob)
 
 
-def load_klvm(klvm_filename, package_or_requirement=__name__, search_paths=[]) -> Program:
+def load_clvk(clvk_filename, package_or_requirement=__name__, search_paths=[]) -> Program:
     return Program.from_bytes(
         bytes(
-            load_serialized_klvm(
-                klvm_filename, package_or_requirement=package_or_requirement, search_paths=search_paths
+            load_serialized_clvk(
+                clvk_filename, package_or_requirement=package_or_requirement, search_paths=search_paths
             )
         )
     )

@@ -191,7 +191,7 @@ The objects they are inspecting can be a list of strings (from the cmd line), or
 @inspect_cmd.command("coins", short_help="Various methods for examining and calculating coin objects")
 @click.argument("coins", nargs=-1, required=False)
 @click.option("-pid", "--parent-id", help="The parent coin's ID")
-@click.option("-ph", "--puzzle-hash", help="The tree hash of the KLVM puzzle that locks this coin")
+@click.option("-ph", "--puzzle-hash", help="The tree hash of the CLVK puzzle that locks this coin")
 @click.option("-a", "--amount", help="The amount of the coin")
 @click.pass_context
 def inspect_coin_cmd(ctx: click.Context, coins: tuple[str], **kwargs):
@@ -239,12 +239,12 @@ def do_inspect_coin_cmd(
 @click.option(
     "-ph",
     "--puzzle-hash",
-    help="The tree hash of the KLVM puzzle that locks the coin being spent",
+    help="The tree hash of the CLVK puzzle that locks the coin being spent",
 )
 @click.option("-a", "--amount", help="The amount of the coin being spent")
 @click.option("-pr", "--puzzle-reveal", help="The program that is hashed into this coin")
 @click.option("-s", "--solution", help="The attempted solution to the puzzle")
-@click.option("-ec", "--cost", is_flag=True, help="Print the KLVM cost of the spend")
+@click.option("-ec", "--cost", is_flag=True, help="Print the CLVK cost of the spend")
 @click.option(
     "--ignore-byte-cost",
     is_flag=True,
@@ -357,7 +357,7 @@ def do_inspect_coin_spend_cmd(
     show_default=True,
     help="The network this spend bundle will be pushed to (for AGG_SIG_ME)",
 )
-@click.option("-ec", "--cost", is_flag=True, help="Print the KLVM cost of the entire bundle")
+@click.option("-ec", "--cost", is_flag=True, help="Print the CLVK cost of the entire bundle")
 @click.option(
     "--ignore-byte-cost",
     is_flag=True,
@@ -474,7 +474,7 @@ def do_inspect_spend_bundle_cmd(
 @click.option(
     "-ph",
     "--puzzle-hash",
-    help="The tree hash of the KLVM puzzle that locks the coin being spent",
+    help="The tree hash of the CLVK puzzle that locks the coin being spent",
 )
 @click.option("-a", "--amount", help="The amount of the coin being spent")
 @click.option(
@@ -565,7 +565,7 @@ def do_inspect_coin_record_cmd(
     return coin_record_objs
 
 
-@inspect_cmd.command("programs", short_help="Various methods for examining KLVM Program objects")
+@inspect_cmd.command("programs", short_help="Various methods for examining CLVK Program objects")
 @click.argument("programs", nargs=-1, required=False)
 @click.pass_context
 def inspect_program_cmd(ctx: click.Context, programs: tuple[str], **kwargs):

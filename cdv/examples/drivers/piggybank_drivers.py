@@ -8,13 +8,13 @@ from chik.types.condition_opcodes import ConditionOpcode
 from chik.util.hash import std_hash
 from chik_rs.sized_bytes import bytes32
 from chik_rs.sized_ints import uint64
-from klvm.casts import int_to_bytes
+from clvk.casts import int_to_bytes
 
 import cdv.clibs as std_lib
-from cdv.util.load_klvm import load_klvm
+from cdv.util.load_clvk import load_clvk
 
 clibs_path: Path = Path(std_lib.__file__).parent
-PIGGYBANK_MOD: Program = load_klvm("piggybank.clsp", "cdv.examples.clsp", search_paths=[clibs_path])
+PIGGYBANK_MOD: Program = load_clvk("piggybank.clsp", "cdv.examples.clsp", search_paths=[clibs_path])
 
 
 # Create a piggybank
